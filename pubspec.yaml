@@ -1,5 +1,5 @@
 name: localstore
-description: A new Flutter package project.
+description: A simple JSON file-based storage package for reading and writing simple JSON (NoSQL document).
 
 version: 0.0.1
 homepage: https://github.com/chuyentt/localstore

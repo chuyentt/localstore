@@ -1,6 +1,6 @@
 # Localstore
 
-A simple JSON file-based storage.
+A simple JSON file-based storage package for reading and writing simple JSON (NoSQL document)
 
 ## Getting Started
 
