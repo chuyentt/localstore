@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:localstore/localstore.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   group('Localstore', () {
     final db = Localstore.instance;
     test('creates an instance', () {
@@ -30,6 +31,15 @@ void main() {
           .collection('childpath')
           .doc('8rvf1dfxw');
       expect(newDoc, expectedNewDoc);
+    });
+    test('creates and updates data', () async {
+      final data = {'uid': '8rvf1dfxw', 'displayName': 'Chuyen'};
+      final doc = db.collection('Users').doc();
+      doc.set(data);
+      final expectedDoc = db.collection('Users').doc(doc.id);
+      expect(doc, expectedDoc);
+      final expectedData = await doc.get();
+      expect(data, expectedData);
     });
   });
 }

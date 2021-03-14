@@ -1,7 +1,7 @@
 name: localstore
 description: A simple JSON file-based storage package for reading and writing simple JSON (NoSQL document).
 
-version: 0.0.1
+version: 0.5.0
 homepage: https://github.com/chuyentt/localstore
 
 environment:

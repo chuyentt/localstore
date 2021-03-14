@@ -11,4 +11,9 @@ class Localstore implements LocalstoreImpl {
   CollectionRef collection(String path) {
     return CollectionRef(path, null, _delegate);
   }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+  }
 }
