@@ -7,7 +7,7 @@
         {
             "name": "localstore",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
         }
     ]
 }

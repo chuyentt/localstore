@@ -1,8 +1,13 @@
 library localstore;
 
-/// A simple JSON file-based storage
-class Localstore {
-  Localstore._();
-  static final Localstore _localstore = Localstore._();
-  static Localstore get instance => _localstore;
-}
+import 'dart:math';
+
+import 'src/utils/html.dart' if (dart.library.io) 'src/utils/io.dart';
+
+part 'src/collection_ref.dart';
+part 'src/collection_ref_impl.dart';
+part 'src/document_ref.dart';
+part 'src/document_ref_impl.dart';
+part 'src/localstore_base.dart';
+part 'src/localstore_impl.dart';
+part 'src/utils/utils.dart';

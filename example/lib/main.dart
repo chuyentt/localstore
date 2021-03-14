@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localstore/localstore.dart';
 
 void main() {
   runApp(MyApp());
@@ -28,6 +29,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  final _db = Localstore.instance;
 
   void _incrementCounter() {
     setState(() {
@@ -43,6 +45,9 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Text(
+              '${_db.collection('mypath').doc().toString()}',
+            ),
             Text(
               'You have pushed the button this many times:',
             ),
