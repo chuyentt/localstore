@@ -1,16 +1,26 @@
 part of localstore;
 
+/// A [CollectionRef] object can be used for adding documents, getting
+/// [DocumentRef]s, and querying for documents (using the methods
+/// inherited from [Query]).
 class CollectionRef implements CollectionRefImpl {
   String _id;
+
+  /// A string representing the path of the referenced document (relative to the
+  /// root of the database).
   String get path => '${_parent?.path ?? ''}${_delegate?.id ?? ''}/$_id/';
 
   DocumentRef? _delegate;
 
   CollectionRef? _parent;
+
+  /// The parent [CollectionRef] of this document.
   CollectionRef? get parent => _parent;
 
   CollectionRef._(this._id, [this._parent, this._delegate]);
   static final _cache = <String, CollectionRef>{};
+
+  /// Returns an instance using the default [CollectionRef].
   factory CollectionRef(String id,
       [CollectionRef? parent, DocumentRef? delegate]) {
     final key = '${parent?.path ?? ''}${delegate?.id ?? ''}/$id/';
@@ -29,10 +39,5 @@ class CollectionRef implements CollectionRefImpl {
         .toRadixString(35)
         .substring(0, 9);
     return DocumentRef(id, this);
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
   }
 }

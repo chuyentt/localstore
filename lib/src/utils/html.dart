@@ -5,6 +5,7 @@ import 'dart:html' as html;
 
 import 'utils_impl.dart';
 
+/// Utils class
 class Utils implements UtilsImpl {
   Utils._();
   static final Utils _utils = Utils._();
@@ -99,12 +100,5 @@ class Utils implements UtilsImpl {
 
   Future<dynamic> _deleteFromStorage(String path) async {
     localStorage.remove(path);
-  }
-
-  @override
-  void dispose() {
-    _storageCache.forEach((key, value) {
-      value.close();
-    });
   }
 }

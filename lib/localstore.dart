@@ -1,9 +1,8 @@
 library localstore;
 
-import 'dart:io';
 import 'dart:math';
 
-import 'src/utils/io.dart' if (dart.library.html) 'src/utils/html.dart';
+import 'src/utils/html.dart' if (dart.library.io) 'src/utils/io.dart';
 
 part 'src/collection_ref.dart';
 part 'src/collection_ref_impl.dart';

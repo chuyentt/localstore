@@ -158,15 +158,4 @@ class Utils implements UtilsImpl {
       }
     });
   }
-
-  @override
-  void dispose() {
-    _storageCache.forEach((key, value) {
-      value.close();
-    });
-    _fileCache.forEach((key, value) {
-      value.close();
-    });
-    _fileCache.clear();
-  }
 }
