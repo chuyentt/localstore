@@ -1,3 +1,7 @@
+## [1.0.0] - 2021-03-15
+
+* Worked on the web
+
 ## [0.5.0+1] - 2021-03-15
 
 * Providing documentation

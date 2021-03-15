@@ -41,7 +41,6 @@ class Utils implements UtilsImpl {
   StreamController<Map<String, dynamic>> _newStream(String path) {
     final storage = StreamController<Map<String, dynamic>>();
     _initStream(storage, path);
-
     return storage;
   }
 
@@ -49,16 +48,21 @@ class Utils implements UtilsImpl {
     StreamController<Map<String, dynamic>> storage,
     String path,
   ) async {
-    final entries = localStorage.entries;
-    entries.forEach((e) {
-      print(e.value);
-    });
-    // entries.forEach((data) async {
-    //   print(data);
-    //   // if (data is Map<String, dynamic>) {
-    //   //   storage.add(data);
-    //   // }
-    // });
+    var dataCol = localStorage.entries.singleWhere(
+      (e) => e.key == path,
+      orElse: () => MapEntry('', ''),
+    );
+    try {
+      if (dataCol.key != '') {
+        final mapCol = json.decode(dataCol.value) as Map<String, dynamic>;
+        mapCol.forEach((key, value) {
+          final _data = value as Map<String, dynamic>;
+          storage.add(_data);
+        });
+      }
+    } catch (error) {
+      throw error;
+    }
   }
 
   final _storageCache = <String, StreamController<Map<String, dynamic>>>{};
@@ -70,12 +74,7 @@ class Utils implements UtilsImpl {
     );
     if (data != MapEntry('', '')) {
       try {
-        final _key = path.replaceAll(RegExp(r'[^\/]+\/?$'), '');
-        // ignore: close_sinks
-        final storage = _storageCache.putIfAbsent(_key, () => _newStream(_key));
-        final _data = json.decode(data.value) as Map<String, dynamic>;
-        storage.add(_data);
-        return _data;
+        return json.decode(data.value) as Map<String, dynamic>;
       } catch (e) {
         return e;
       }
@@ -86,16 +85,37 @@ class Utils implements UtilsImpl {
     Map<String, dynamic> data,
     String path,
   ) async {
-    final _key = path.replaceAll(RegExp(r'[^\/]+\/?$'), '');
-    localStorage.update(
-      _key,
-      (val) => json.encode({path: data}),
-      ifAbsent: () => json.encode({path: data}),
-    );
+    final key = path.replaceAll(RegExp(r'[^\/]+\/?$'), '');
 
-    // ignore: close_sinks
-    final storage = _storageCache.putIfAbsent(_key, () => _newStream(_key));
-    storage.add(data);
+    final uri = Uri.parse(path);
+    final id = uri.pathSegments.last;
+    var dataCol = localStorage.entries.singleWhere(
+      (e) => e.key == key,
+      orElse: () => MapEntry('', ''),
+    );
+    try {
+      if (dataCol.key != '') {
+        final mapCol = json.decode(dataCol.value) as Map<String, dynamic>;
+        mapCol[id] = data;
+        dataCol = MapEntry(id, json.encode(mapCol));
+        localStorage.update(
+          key,
+          (value) => dataCol.value,
+          ifAbsent: () => dataCol.value,
+        );
+      } else {
+        localStorage.update(
+          key,
+          (value) => json.encode({id: data}),
+          ifAbsent: () => json.encode({id: data}),
+        );
+      }
+      // ignore: close_sinks
+      final storage = _storageCache.putIfAbsent(key, () => _newStream(key));
+      storage.add(data);
+    } catch (error) {
+      throw error;
+    }
   }
 
   Future<dynamic> _deleteFromStorage(String path) async {
