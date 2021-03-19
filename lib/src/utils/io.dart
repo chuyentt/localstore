@@ -15,16 +15,46 @@ class Utils implements UtilsImpl {
   static Utils get instance => _utils;
 
   @override
-  Future<Map<String, dynamic>> get(String path) async {
-    RandomAccessFile? _file = await _getFile(path);
-    if (_file != null) {
-      final data = await _readFile(_file);
-      if (data is Map<String, dynamic>) {
-        final _key = path.replaceAll(RegExp(r'[^\/]+\/?$'), '');
-        // ignore: close_sinks
-        final storage = _storageCache.putIfAbsent(_key, () => _newStream(_key));
-        storage.add(data);
-        return data;
+  Future<Map<String, dynamic>> get(String path,
+      [bool? isCollection = false, List<List>? conditions]) async {
+    // Fetch the documents for this collection
+    if (isCollection != null && isCollection == true) {
+      _docDir ??= await _getDocumentDir();
+      final _path = '${_docDir?.path}$path';
+      final _dir = Directory(_path);
+      List<FileSystemEntity> entries =
+          _dir.listSync(recursive: false).where((e) => e is File).toList();
+      if (conditions != null && conditions.first.length > 0) {
+        return _getAll(entries);
+        /*
+        // With conditions
+        entries.forEach((e) async {
+          final path = e.path.replaceAll(_docDir!.path, '');
+          final file = await _getFile(path);
+          _readFile(file!).then((data) {
+            if (data is Map<String, dynamic>) {
+              _data[path] = data;
+            }
+          });
+        });
+        return _data;
+        */
+      } else {
+        return _getAll(entries);
+      }
+    } else {
+      // Reads the document referenced by this [DocumentRef].
+      RandomAccessFile? _file = await _getFile(path);
+      if (_file != null) {
+        final data = await _readFile(_file);
+        if (data is Map<String, dynamic>) {
+          final _key = path.replaceAll(RegExp(r'[^\/]+\/?$'), '');
+          // ignore: close_sinks
+          final storage =
+              _storageCache.putIfAbsent(_key, () => _newStream(_key));
+          storage.add(data);
+          return data;
+        }
       }
     }
     return Map<String, dynamic>();
@@ -41,10 +71,24 @@ class Utils implements UtilsImpl {
   }
 
   @override
-  Stream<Map<String, dynamic>> stream(String path) {
+  Stream<Map<String, dynamic>> stream(String path, [List<List>? conditions]) {
     // ignore: close_sinks
     final storage = _storageCache.putIfAbsent(path, () => _newStream(path));
     return storage.stream;
+  }
+
+  Map<String, dynamic> _getAll(List<FileSystemEntity> entries) {
+    final _data = <String, dynamic>{};
+    entries.forEach((e) async {
+      final path = e.path.replaceAll(_docDir!.path, '');
+      final file = await _getFile(path);
+      _readFile(file!).then((data) {
+        if (data is Map<String, dynamic>) {
+          _data[path] = data;
+        }
+      });
+    });
+    return _data;
   }
 
   /// Streams all file in the path

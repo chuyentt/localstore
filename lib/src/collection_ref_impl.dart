@@ -12,4 +12,16 @@ abstract class CollectionRefImpl {
 
   /// Notifies of query results at this collection.
   Stream<Map<String, dynamic>> get stream;
+
+  /// Fetch the documents for this collection
+  Future<Map<String, dynamic>?> get();
+
+  /// Creates and returns a new [CollectionRef] with additional filter on
+  /// specified [field]. [field] refers to a field in a document.
+  ///
+  /// `where` is not implemented
+  CollectionRef where(
+    field, {
+    isEqualTo,
+  });
 }

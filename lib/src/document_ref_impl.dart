@@ -12,7 +12,7 @@ abstract class DocumentRefImpl {
   /// document instead of overwriting.
   Future<dynamic> set(Map<String, dynamic> data, [SetOptions? options]);
 
-  /// Returns the parent [DocumentRef] of this collection or `null`.
+  /// Reads the document referenced by this [DocumentRef].
   Future<Map<String, dynamic>?> get();
 
   /// Deletes the current document from the collection.

@@ -8,7 +8,7 @@ part of localstore;
 /// final db = Localstore.instance;
 /// ```
 class Localstore implements LocalstoreImpl {
-  DocumentRef _delegate = DocumentRef._('');
+  final _delegate = DocumentRef._('');
   Localstore._();
   static final Localstore _localstore = Localstore._();
 

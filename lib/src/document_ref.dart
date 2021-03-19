@@ -42,7 +42,7 @@ class DocumentRef implements DocumentRefImpl {
   String get path => '${_delegate?.path ?? ''}$id';
   final _utils = Utils.instance;
 
-  final Map<String?, dynamic> _data = {};
+  final Map<String, dynamic> _data = {};
 
   @override
   Future<dynamic> set(Map<String, dynamic> data, [SetOptions? options]) async {

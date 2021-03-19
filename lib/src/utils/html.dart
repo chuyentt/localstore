@@ -14,9 +14,50 @@ class Utils implements UtilsImpl {
   html.Storage get localStorage => html.window.localStorage;
 
   @override
-  Future<Map<String, dynamic>> get(String path) async {
-    final data = await _readFromStorage(path);
-    if (data is Map<String, dynamic>) return data;
+  Future<Map<String, dynamic>> get(String path,
+      [bool? isCollection = false, List<List>? conditions]) async {
+    // Fetch the documents for this collection
+    if (isCollection != null && isCollection == true) {
+      var dataCol = localStorage.entries.singleWhere(
+        (e) => e.key == path,
+        orElse: () => MapEntry('', ''),
+      );
+      if (dataCol.key != '') {
+        if (conditions != null && conditions.first.length > 0) {
+          return _getAll(dataCol);
+          /*
+          final ck = conditions.first[0] as String;
+          final co = conditions.first[1];
+          final cv = conditions.first[2];
+          // With conditions
+          try {
+            final mapCol = json.decode(dataCol.value) as Map<String, dynamic>;
+            final its = SplayTreeMap.of(mapCol);
+            its.removeWhere((key, value) {
+              if (value is Map<String, dynamic>) {
+                final key = value.keys.contains(ck);
+                final check = value[ck] as bool;
+                return !(key == true && check == cv);
+              }
+              return false;
+            });
+            its.forEach((key, value) {
+              final data = value as Map<String, dynamic>;
+              _data[key] = data;
+            });
+            return _data;
+          } catch (error) {
+            throw error;
+          }
+          */
+        } else {
+          return _getAll(dataCol);
+        }
+      }
+    } else {
+      final data = await _readFromStorage(path);
+      if (data is Map<String, dynamic>) return data;
+    }
     return Map<String, dynamic>();
   }
 
@@ -31,10 +72,24 @@ class Utils implements UtilsImpl {
   }
 
   @override
-  Stream<Map<String, dynamic>> stream(String path) {
+  Stream<Map<String, dynamic>> stream(String path, [List<List>? conditions]) {
     // ignore: close_sinks
     final storage = _storageCache.putIfAbsent(path, () => _newStream(path));
     return storage.stream;
+  }
+
+  Map<String, dynamic> _getAll(MapEntry<String, String> dataCol) {
+    final _data = <String, dynamic>{};
+    try {
+      final mapCol = json.decode(dataCol.value) as Map<String, dynamic>;
+      mapCol.forEach((key, value) {
+        final data = value as Map<String, dynamic>;
+        _data[key] = data;
+      });
+      return _data;
+    } catch (error) {
+      throw error;
+    }
   }
 
   /// Streams all file in the path

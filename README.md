@@ -58,7 +58,12 @@ final data = await db.collection('todos').doc(id).get();
 db.collection('todos').doc(id).delete();
 ```
 
-7. Using stream
+7. Fetch the documents for the collection
+```dart
+final items = await db.collection('todos').get();
+```
+
+8. Using stream
 ```dart
 final stream = db.collection('todos').stream;
 ```

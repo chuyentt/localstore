@@ -1,3 +1,8 @@
+## [1.1.0] - 2021-03-19
+
+* Fetch the documents for the collection
+* Added query where but not implemented (need contribution)
+
 ## [1.0.0] - 2021-03-15
 
 * Worked on the web
