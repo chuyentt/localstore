@@ -1,6 +1,9 @@
 # Localstore Example
 
-An example flutter project using Localstore.
+
+## Demo Screenshot
+
+<img src="doc/localstore_screen_shot.gif" width="320" />
 
 ## Getting Started
 ```dart

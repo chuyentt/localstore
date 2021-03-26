@@ -33,6 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final _items = <String, Todo>{};
   @override
   void initState() {
+    /*
     _db.collection('todos').get().then((value) {
       setState(() {
         value?.entries.forEach((element) {
@@ -41,12 +42,13 @@ class _MyHomePageState extends State<MyHomePage> {
         });
       });
     });
-    // _db.collection('todos').stream.listen((event) {
-    //   setState(() {
-    //     final item = Todo.fromMap(event);
-    //     _items.putIfAbsent(item.id, () => item);
-    //   });
-    // });
+    */
+    _db.collection('todos').stream.listen((event) {
+      setState(() {
+        final item = Todo.fromMap(event);
+        _items.putIfAbsent(item.id, () => item);
+      });
+    });
     super.initState();
   }
 

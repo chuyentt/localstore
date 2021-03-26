@@ -1,18 +1,5 @@
 part of localstore;
 
-/// An options class that configures the behavior of set() calls in
-/// [DocumentRef], [WriteBatch] and [Transaction].
-class SetOptions {
-  final bool _merge;
-
-  /// Changes the behavior of a set() call to only replace the values specified
-  /// in its data argument.
-  bool get merge => _merge;
-
-  /// Creates a [SetOptions] instance.
-  SetOptions({bool merge = false}) : _merge = merge;
-}
-
 /// A [DocumentRef] refers to a document location in a [Localstore] database
 /// and can be used to write, read, or listen to the location.
 ///

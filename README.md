@@ -1,7 +1,17 @@
 # Localstore
 [![pub package](https://img.shields.io/pub/v/localstore.svg)](https://pub.dartlang.org/packages/localstore)
 
-A JSON file-based storage package provides a persistent repository for simple NoSQL documents.
+Between SQL or NoSQL, there's no one best database, there's the right database for your specific project. Localstore is a JSON file-based storage package provides a persistent repository for simple NoSQL database.
+| | Localstore (NoSQL)      | SQLite (SQL) |
+|-| ----------- | ----------- |
+| Data format | File path (collection) | Table |
+| Data item | JSON Document (doc) | Record / Row |
+| Scalability |	Horizontal	| Limited vertical |
+| Organization | Schema-less | Fixed schema |
+
+## Demo Screenshot
+
+<img src="https://user-images.githubusercontent.com/6267856/112655041-94e72100-8e82-11eb-8d9f-673f0f2e1b80.gif" width="320" />
 
 ## Getting Started
 

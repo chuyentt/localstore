@@ -1,3 +1,11 @@
+## [1.1.0+2] - 2021-03-26
+
+* Updated README
+
+## [1.1.0+1] - 2021-03-26
+
+* Updated API documentation
+
 ## [1.1.0] - 2021-03-19
 
 * Fetch the documents for the collection
