@@ -145,6 +145,3 @@ extension ExtTodo on Todo {
     return _db.collection('todos').doc(id).delete();
   }
 }
-```
-## Screen shot
-![GeoJSON UML Model](doc/localstore_screen_shot.png)
