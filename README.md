@@ -2,11 +2,12 @@
 [![pub package](https://img.shields.io/pub/v/localstore.svg)](https://pub.dartlang.org/packages/localstore)
 
 Between SQL or NoSQL, there's no one best database, there's the right database for your specific project. Localstore is a JSON file-based storage package provides a persistent repository for simple NoSQL database.
-| | Localstore (NoSQL)      | SQLite (SQL) |
-|-| ----------- | ----------- |
+
+| | Localstore (NoSQL) | SQLite (SQL) |
+|-| -------------------| ------------ |
 | Data format | File path (collection) | Table |
 | Data item | JSON Document (doc) | Record / Row |
-| Scalability |	Horizontal	| Limited vertical |
+| Scalability |	Horizontal | Limited vertical |
 | Organization | Schema-less | Fixed schema |
 
 ## Demo Screenshot
@@ -47,7 +48,7 @@ or using anywhere in your project.
 
 ```dart
 // gets new id
-final id = db.collection('todos').doc();
+final id = db.collection('todos').doc().id;
 
 // save the item
 db.collection('todos').doc(id).set({
