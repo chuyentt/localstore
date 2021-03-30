@@ -1,3 +1,7 @@
+## [1.1.1] - 2021-03-30
+
+* Fixed: An async operation is currently pending
+
 ## [1.1.0+4] - 2021-03-28
 
 * Updated README
