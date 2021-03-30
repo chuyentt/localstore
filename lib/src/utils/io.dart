@@ -25,7 +25,7 @@ class Utils implements UtilsImpl {
       List<FileSystemEntity> entries =
           _dir.listSync(recursive: false).where((e) => e is File).toList();
       if (conditions != null && conditions.first.length > 0) {
-        return _getAll(entries);
+        return await _getAll(entries);
         /*
         // With conditions
         entries.forEach((e) async {
@@ -40,13 +40,14 @@ class Utils implements UtilsImpl {
         return _data;
         */
       } else {
-        return _getAll(entries);
+        return await _getAll(entries);
       }
     } else {
       // Reads the document referenced by this [DocumentRef].
       RandomAccessFile? _file = await _getFile(path);
       if (_file != null) {
         final data = await _readFile(_file);
+        // await _file.close();
         if (data is Map<String, dynamic>) {
           final _key = path.replaceAll(RegExp(r'[^\/]+\/?$'), '');
           // ignore: close_sinks
@@ -77,17 +78,17 @@ class Utils implements UtilsImpl {
     return storage.stream;
   }
 
-  Map<String, dynamic> _getAll(List<FileSystemEntity> entries) {
+  Future<Map<String, dynamic>> _getAll(List<FileSystemEntity> entries) async {
     final _data = <String, dynamic>{};
-    entries.forEach((e) async {
+    await Future.forEach(entries, (FileSystemEntity e) async {
       final path = e.path.replaceAll(_docDir!.path, '');
       final file = await _getFile(path);
-      _readFile(file!).then((data) {
-        if (data is Map<String, dynamic>) {
-          _data[path] = data;
-        }
-      });
+      final data = await _readFile(file!);
+      if (data is Map<String, dynamic>) {
+        _data[path] = data;
+      }
     });
+
     return _data;
   }
 
@@ -127,10 +128,10 @@ class Utils implements UtilsImpl {
   final _fileCache = <String, RandomAccessFile>{};
 
   Future<dynamic> _readFile(RandomAccessFile file) async {
-    final length = await file.length();
-    file = await file.setPosition(0);
+    final length = file.lengthSync();
+    file.setPositionSync(0);
     final buffer = Uint8List(length);
-    await file.readInto(buffer);
+    file.readIntoSync(buffer);
     try {
       final contentText = utf8.decode(buffer);
       final _data = json.decode(contentText) as Map<String, dynamic>;
@@ -152,10 +153,10 @@ class Utils implements UtilsImpl {
     RandomAccessFile? _file;
 
     if (await file.exists()) {
-      _file = await file.open(mode: FileMode.append);
+      _file = file.openSync(mode: FileMode.append);
     } else {
       await file.create(recursive: true);
-      _file = await file.open(mode: FileMode.append);
+      _file = file.openSync(mode: FileMode.append);
     }
 
     _fileCache.putIfAbsent(path, () => _file!);
@@ -180,10 +181,10 @@ class Utils implements UtilsImpl {
     final buffer = utf8.encode(serialized);
     var _file = await _getFile(path);
 
-    _file = await _file!.lock();
-    _file = await _file.setPosition(0);
-    _file = await _file.writeFrom(buffer);
-    _file = await _file.truncate(buffer.length);
+    _file!.lockSync();
+    _file.setPositionSync(0);
+    _file.writeFromSync(buffer);
+    _file.truncateSync(buffer.length);
 
     final _key = path.replaceAll(RegExp(r'[^\/]+\/?$'), '');
     // ignore: close_sinks

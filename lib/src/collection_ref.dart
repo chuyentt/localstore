@@ -32,14 +32,13 @@ class CollectionRef implements CollectionRefImpl {
   }
 
   final _utils = Utils.instance;
-  final Map<String, dynamic?> _data = {};
 
   @override
   Stream<Map<String, dynamic>> get stream => _utils.stream(path, _conditions);
 
   @override
   Future<Map<String, dynamic>?> get() async {
-    return _data[path] ?? await _utils.get(path, true, _conditions);
+    return await _utils.get(path, true, _conditions);
   }
 
   @override
