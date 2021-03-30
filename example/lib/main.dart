@@ -33,6 +33,12 @@ class _MyHomePageState extends State<MyHomePage> {
   final _items = <String, Todo>{};
   @override
   void initState() {
+    Localstore.instance.collection('_settings').doc('projections').set(
+      {
+        '1': {'code': '1'},
+      },
+      SetOptions(merge: true),
+    );
     /*
     _db.collection('todos').get().then((value) {
       setState(() {

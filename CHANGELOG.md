@@ -1,3 +1,7 @@
+## [1.1.2] - 2021-03-30
+
+* Fixed: Null check operator used on a null value
+
 ## [1.1.1] - 2021-03-30
 
 * Fixed: An async operation is currently pending
