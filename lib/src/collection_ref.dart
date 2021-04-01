@@ -7,7 +7,9 @@ class CollectionRef implements CollectionRefImpl {
 
   /// A string representing the path of the referenced document (relative to the
   /// root of the database).
-  String get path => '${_parent?.path ?? ''}${_delegate?.id ?? ''}/$_id/';
+  String get path => _path;
+
+  String _path = '';
 
   DocumentRef? _delegate;
 
@@ -18,17 +20,25 @@ class CollectionRef implements CollectionRefImpl {
   /// The parent [CollectionRef] of this document.
   CollectionRef? get parent => _parent;
 
-  CollectionRef._(this._id, [this._parent, this._delegate, this._conditions]);
+  CollectionRef._(this._id, [this._parent, this._delegate, this._conditions]) {
+    _path = _buildPath(_parent?.path, _id, _delegate?.id);
+  }
   static final _cache = <String, CollectionRef>{};
 
   /// Returns an instance using the default [CollectionRef].
   factory CollectionRef(String id,
       [CollectionRef? parent, DocumentRef? delegate]) {
-    final key = '${parent?.path ?? ''}${delegate?.id ?? ''}/$id/';
+    final key = _buildPath(parent?.path, id, delegate?.id);
     final collectionRef =
         _cache.putIfAbsent(key, () => CollectionRef._(id, parent, delegate));
     collectionRef._conditions = null;
     return collectionRef;
+  }
+
+  static String _buildPath(String? parentPath, String path, String? docId) {
+    final docPath =
+        ((docId != null && parentPath != null) ? '$docId.collection' : '');
+    return '${parentPath ?? ''}$docPath/$path/';
   }
 
   final _utils = Utils.instance;
