@@ -1,3 +1,8 @@
+## [1.1.3] - 2021-04-01
+
+* Fixed: Dirctory listing failed
+* Fixed: OS Error: Too many open files, errno = 24
+
 ## [1.1.2] - 2021-03-30
 
 * Fixed: Null check operator used on a null value

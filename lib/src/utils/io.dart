@@ -22,6 +22,9 @@ class Utils implements UtilsImpl {
       _docDir ??= await _getDocumentDir();
       final _path = '${_docDir?.path}$path';
       final _dir = Directory(_path);
+      if (!_dir.existsSync()) {
+        _dir.createSync(recursive: true);
+      }
       List<FileSystemEntity> entries =
           _dir.listSync(recursive: false).where((e) => e is File).toList();
       if (conditions != null && conditions.first.length > 0) {
@@ -44,19 +47,20 @@ class Utils implements UtilsImpl {
       }
     } else {
       // Reads the document referenced by this [DocumentRef].
-      RandomAccessFile? _file = await _getFile(path);
-      if (_file != null) {
-        final data = await _readFile(_file);
-        // await _file.close();
-        if (data is Map<String, dynamic>) {
-          final _key = path.replaceAll(RegExp(r'[^\/]+\/?$'), '');
-          // ignore: close_sinks
-          final storage =
-              _storageCache.putIfAbsent(_key, () => _newStream(_key));
-          storage.add(data);
-          return data;
-        }
+      final file = await _getFile(path);
+      final _file = file!.openSync(mode: FileMode.append);
+      // if (_file != null) {
+      final data = await _readFile(_file);
+      // await _file.close();
+      if (data is Map<String, dynamic>) {
+        final _key = path.replaceAll(RegExp(r'[^\/]+\/?$'), '');
+        // ignore: close_sinks
+        final storage = _storageCache.putIfAbsent(_key, () => _newStream(_key));
+        storage.add(data);
+        return data;
       }
+      _file.closeSync();
+      // }
     }
     return Map<String, dynamic>();
   }
@@ -83,10 +87,12 @@ class Utils implements UtilsImpl {
     await Future.forEach(entries, (FileSystemEntity e) async {
       final path = e.path.replaceAll(_docDir!.path, '');
       final file = await _getFile(path);
-      final data = await _readFile(file!);
+      final _file = file!.openSync(mode: FileMode.append);
+      final data = await _readFile(_file);
       if (data is Map<String, dynamic>) {
         _data[path] = data;
       }
+      _file.closeSync();
     });
 
     return _data;
@@ -113,11 +119,13 @@ class Utils implements UtilsImpl {
       entries.forEach((e) async {
         final path = e.path.replaceAll(_docDir!.path, '');
         final file = await _getFile(path);
-        _readFile(file!).then((data) {
+        final _file = file!.openSync(mode: FileMode.append);
+        _readFile(_file).then((data) {
           if (data is Map<String, dynamic>) {
             storage.add(data);
           }
         });
+        _file.closeSync();
       });
     } catch (e) {
       return e;
@@ -125,7 +133,7 @@ class Utils implements UtilsImpl {
   }
 
   final _storageCache = <String, StreamController<Map<String, dynamic>>>{};
-  final _fileCache = <String, RandomAccessFile>{};
+  final _fileCache = <String, File>{};
 
   Future<dynamic> _readFile(RandomAccessFile file) async {
     final length = file.lengthSync();
@@ -141,7 +149,7 @@ class Utils implements UtilsImpl {
     }
   }
 
-  Future<RandomAccessFile?> _getFile(String path) async {
+  Future<File?> _getFile(String path) async {
     if (_fileCache.containsKey(path)) return _fileCache[path];
 
     _docDir ??= await _getDocumentDir();
@@ -152,16 +160,16 @@ class Utils implements UtilsImpl {
 
     RandomAccessFile? _file;
 
-    if (await file.exists()) {
+    if (!file.existsSync()) {
+      file.createSync(recursive: true);
       _file = file.openSync(mode: FileMode.append);
     } else {
-      await file.create(recursive: true);
       _file = file.openSync(mode: FileMode.append);
     }
+    _file.closeSync();
+    _fileCache.putIfAbsent(path, () => file);
 
-    _fileCache.putIfAbsent(path, () => _file!);
-
-    return _file;
+    return file;
   }
 
   Directory? _docDir;
@@ -179,12 +187,14 @@ class Utils implements UtilsImpl {
   Future _writeFile(Map<String, dynamic> data, String path) async {
     final serialized = json.encode(data);
     final buffer = utf8.encode(serialized);
-    var _file = await _getFile(path);
+    final file = await _getFile(path);
+    final _file = file!.openSync(mode: FileMode.append);
 
-    _file!.lockSync();
+    _file.lockSync();
     _file.setPositionSync(0);
     _file.writeFromSync(buffer);
     _file.truncateSync(buffer.length);
+    _file.closeSync();
 
     final _key = path.replaceAll(RegExp(r'[^\/]+\/?$'), '');
     // ignore: close_sinks
