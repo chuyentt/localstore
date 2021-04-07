@@ -49,9 +49,8 @@ class Utils implements UtilsImpl {
       // Reads the document referenced by this [DocumentRef].
       final file = await _getFile(path);
       final _file = file!.openSync(mode: FileMode.append);
-      // if (_file != null) {
       final data = await _readFile(_file);
-      // await _file.close();
+      _file.closeSync();
       if (data is Map<String, dynamic>) {
         final _key = path.replaceAll(RegExp(r'[^\/]+\/?$'), '');
         // ignore: close_sinks
@@ -59,8 +58,6 @@ class Utils implements UtilsImpl {
         storage.add(data);
         return data;
       }
-      _file.closeSync();
-      // }
     }
     return Map<String, dynamic>();
   }
@@ -89,12 +86,11 @@ class Utils implements UtilsImpl {
       final file = await _getFile(path);
       final _file = file!.openSync(mode: FileMode.append);
       final data = await _readFile(_file);
+      _file.closeSync();
       if (data is Map<String, dynamic>) {
         _data[path] = data;
       }
-      _file.closeSync();
     });
-
     return _data;
   }
 
@@ -121,11 +117,11 @@ class Utils implements UtilsImpl {
         final file = await _getFile(path);
         final _file = file!.openSync(mode: FileMode.append);
         _readFile(_file).then((data) {
+          _file.closeSync();
           if (data is Map<String, dynamic>) {
             storage.add(data);
           }
         });
-        _file.closeSync();
       });
     } catch (e) {
       return e;
@@ -158,15 +154,7 @@ class Utils implements UtilsImpl {
 
     final file = File('$_path$path');
 
-    RandomAccessFile? _file;
-
-    if (!file.existsSync()) {
-      file.createSync(recursive: true);
-      _file = file.openSync(mode: FileMode.append);
-    } else {
-      _file = file.openSync(mode: FileMode.append);
-    }
-    _file.closeSync();
+    if (!file.existsSync()) file.createSync(recursive: true);
     _fileCache.putIfAbsent(path, () => file);
 
     return file;
@@ -206,11 +194,9 @@ class Utils implements UtilsImpl {
     _docDir ??= await _getDocumentDir();
     final _path = _docDir?.path;
     final _file = File('$_path$path');
-    _file.exists().then((value) {
-      if (value) {
-        _file.delete();
-        _fileCache.remove(path);
-      }
-    });
+    if (_file.existsSync()) {
+      _file.delete();
+      _fileCache.remove(path);
+    }
   }
 }

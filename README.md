@@ -1,7 +1,7 @@
 # Localstore
 [![pub package](https://img.shields.io/pub/v/localstore.svg)](https://pub.dartlang.org/packages/localstore)
 
-Between SQL or NoSQL, there's no one best database, there's the right database for your specific project. Localstore is a JSON file-based storage package provides a persistent repository for simple NoSQL database.
+Between SQL or NoSQL, there's no one best database, there's the right database for your specific project. Localstore is a JSON file-based storage package (localstorage) provides a persistent repository for simple NoSQL database.
 
 | | Localstore (NoSQL) | SQLite (SQL) |
 |-| -------------------| ------------ |

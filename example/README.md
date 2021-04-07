@@ -6,6 +6,14 @@
 <img src="doc/localstore_screen_shot.gif" width="320" />
 
 ## Getting Started
+
+### Creating a null-safe package or app
+```dart
+flutter create my_app
+cd my_app
+dart migrate --apply-changes
+```
+### Replace the code in your `main.dart` file with the following code
 ```dart
 import 'package:flutter/material.dart';
 import 'package:localstore/localstore.dart';
