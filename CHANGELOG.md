@@ -1,3 +1,7 @@
+## [1.1.5] - 2021-04-10
+
+* Fixed: Stream has already been listened to
+
 ## [1.1.4] - 2021-04-07
 
 * Fixed: issues with openSync and closeSync
