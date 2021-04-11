@@ -74,7 +74,12 @@ class Utils implements UtilsImpl {
   @override
   Stream<Map<String, dynamic>> stream(String path, [List<List>? conditions]) {
     // ignore: close_sinks
-    final storage = _storageCache.putIfAbsent(path, () => _newStream(path));
+    var storage = _storageCache[path];
+    if (storage == null) {
+      storage = _storageCache.putIfAbsent(path, () => _newStream(path));
+    } else {
+      _initStream(storage, path);
+    }
     return storage.stream;
   }
 
@@ -94,7 +99,7 @@ class Utils implements UtilsImpl {
 
   /// Streams all file in the path
   StreamController<Map<String, dynamic>> _newStream(String path) {
-    final storage = StreamController<Map<String, dynamic>>();
+    final storage = StreamController<Map<String, dynamic>>.broadcast();
     _initStream(storage, path);
     return storage;
   }

@@ -1,3 +1,7 @@
+## [1.1.6] - 2021-04-11
+
+* Fixed: Stream has already been listened to (web)
+
 ## [1.1.5] - 2021-04-10
 
 * Fixed: Stream has already been listened to
