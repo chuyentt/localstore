@@ -38,7 +38,7 @@ class CollectionRef implements CollectionRefImpl {
   static String _buildPath(String? parentPath, String path, String? docId) {
     final docPath =
         ((docId != null && parentPath != null) ? '$docId.collection' : '');
-    final pathSep = Platform.pathSeparator;
+    final pathSep = p.separator;
     return '${parentPath ?? ''}$docPath$pathSep$path$pathSep';
   }
 

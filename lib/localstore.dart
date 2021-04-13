@@ -6,7 +6,7 @@
 /// Localstore library
 library localstore;
 
-import 'dart:io';
+import 'package:path/path.dart' as p;
 import 'dart:math';
 
 import 'src/utils/html.dart' if (dart.library.io) 'src/utils/io.dart';

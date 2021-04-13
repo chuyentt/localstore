@@ -1,3 +1,7 @@
+## [1.1.7] - 2021-04-13
+
+* Using platform specific path seperator
+
 ## [1.1.6] - 2021-04-11
 
 * Fixed: Stream has already been listened to (web)
