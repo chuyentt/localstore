@@ -5,7 +5,8 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "localstore",
+            "name": "example",
+            "cwd": "example",
             "request": "launch",
             "type": "dart",
             "args": [

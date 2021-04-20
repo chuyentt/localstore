@@ -1,3 +1,8 @@
+## [1.1.8] - 2021-04-21
+
+* Fixed: delete doc on the web
+* Updated: Example
+
 ## [1.1.7] - 2021-04-13
 
 * Using platform specific path seperator

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:localstore/localstore.dart';
 
@@ -31,6 +33,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final _db = Localstore.instance;
   final _items = <String, Todo>{};
+  late StreamSubscription<Map<String, dynamic>> _subscription;
+
   @override
   void initState() {
     /*
@@ -43,7 +47,8 @@ class _MyHomePageState extends State<MyHomePage> {
       });
     });
     */
-    _db.collection('todos').stream.listen((event) {
+    final stream = _db.collection('todos').stream;
+    _subscription = stream.listen((event) {
       setState(() {
         final item = Todo.fromMap(event);
         _items.putIfAbsent(item.id, () => item);
@@ -100,6 +105,12 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
+  }
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
   }
 }
 
