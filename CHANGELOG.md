@@ -1,3 +1,7 @@
+## [1.2.0] - 2021-05-04
+
+* Get doc nullable by default
+
 ## [1.1.10] - 2021-05-04
 
 * Fixed: get() doc on the web

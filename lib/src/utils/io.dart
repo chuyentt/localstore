@@ -15,7 +15,7 @@ class Utils implements UtilsImpl {
   static Utils get instance => _utils;
 
   @override
-  Future<Map<String, dynamic>> get(String path,
+  Future<Map<String, dynamic>?> get(String path,
       [bool? isCollection = false, List<List>? conditions]) async {
     // Fetch the documents for this collection
     if (isCollection != null && isCollection == true) {
@@ -59,7 +59,7 @@ class Utils implements UtilsImpl {
         return data;
       }
     }
-    return Map<String, dynamic>();
+    return null;
   }
 
   @override
@@ -84,7 +84,7 @@ class Utils implements UtilsImpl {
     return storage.stream;
   }
 
-  Future<Map<String, dynamic>> _getAll(List<FileSystemEntity> entries) async {
+  Future<Map<String, dynamic>?> _getAll(List<FileSystemEntity> entries) async {
     final _data = <String, dynamic>{};
     await Future.forEach(entries, (FileSystemEntity e) async {
       final path = e.path.replaceAll(_docDir!.path, '');
@@ -96,6 +96,7 @@ class Utils implements UtilsImpl {
         _data[path] = data;
       }
     });
+    if (_data.isEmpty) return null;
     return _data;
   }
 

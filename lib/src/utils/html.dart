@@ -14,7 +14,7 @@ class Utils implements UtilsImpl {
   html.Storage get localStorage => html.window.localStorage;
 
   @override
-  Future<Map<String, dynamic>> get(String path,
+  Future<Map<String, dynamic>?> get(String path,
       [bool? isCollection = false, List<List>? conditions]) async {
     // Fetch the documents for this collection
     if (isCollection != null && isCollection == true) {
@@ -57,9 +57,12 @@ class Utils implements UtilsImpl {
     } else {
       final data = await _readFromStorage(path);
       final id = path.substring(path.lastIndexOf('/') + 1, path.length);
-      if (data is Map<String, dynamic>) return data[id];
+      if (data is Map<String, dynamic>) {
+        if (data.containsKey(id)) return data[id];
+        return null;
+      }
     }
-    return Map<String, dynamic>();
+    return null;
   }
 
   @override
@@ -83,7 +86,7 @@ class Utils implements UtilsImpl {
     return storage.stream;
   }
 
-  Map<String, dynamic> _getAll(MapEntry<String, String> dataCol) {
+  Map<String, dynamic>? _getAll(MapEntry<String, String> dataCol) {
     final _data = <String, dynamic>{};
     try {
       final mapCol = json.decode(dataCol.value) as Map<String, dynamic>;
@@ -91,6 +94,7 @@ class Utils implements UtilsImpl {
         final data = value as Map<String, dynamic>;
         _data[key] = data;
       });
+      if (_data.isEmpty) return null;
       return _data;
     } catch (error) {
       throw error;

@@ -50,7 +50,7 @@ class DocumentRef implements DocumentRefImpl {
 
   @override
   Future<Map<String, dynamic>?> get() async {
-    return _data[id] ?? await _utils.get(path) ?? {};
+    return _data[id] ?? await _utils.get(path);
   }
 
   @override
