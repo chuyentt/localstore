@@ -1,3 +1,7 @@
+## [1.1.10] - 2021-05-04
+
+* Fixed: get() doc on the web
+
 ## [1.1.9] - 2021-05-04
 
 * Fixed: get() doc on the web

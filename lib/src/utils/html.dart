@@ -56,7 +56,8 @@ class Utils implements UtilsImpl {
       }
     } else {
       final data = await _readFromStorage(path);
-      if (data is Map<String, dynamic>) return data;
+      final id = path.substring(path.lastIndexOf('/') + 1, path.length);
+      if (data is Map<String, dynamic>) return data[id];
     }
     return Map<String, dynamic>();
   }
