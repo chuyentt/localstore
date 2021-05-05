@@ -1,3 +1,8 @@
+## [1.1.9] - 2021-05-04
+
+* Fixed: get() doc on the web
+* Updated example on the web
+
 ## [1.1.8] - 2021-04-21
 
 * Fixed: delete doc on the web

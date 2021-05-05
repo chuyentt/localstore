@@ -108,7 +108,6 @@ class Utils implements UtilsImpl {
         mapCol.forEach((key, value) {
           final _data = value as Map<String, dynamic>;
           storage.add(_data);
-          storage.sink.add(_data);
         });
       }
     } catch (error) {
@@ -119,8 +118,9 @@ class Utils implements UtilsImpl {
   final _storageCache = <String, StreamController<Map<String, dynamic>>>{};
 
   Future<dynamic> _readFromStorage(String path) async {
+    final key = path.replaceAll(RegExp(r'[^\/]+\/?$'), '');
     final data = localStorage.entries.firstWhere(
-      (i) => i.key == path,
+      (i) => i.key == key,
       orElse: () => MapEntry('', ''),
     );
     if (data != MapEntry('', '')) {

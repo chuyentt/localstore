@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:localstore/localstore.dart';
 
@@ -12,6 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Localstore Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -33,7 +35,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final _db = Localstore.instance;
   final _items = <String, Todo>{};
-  late StreamSubscription<Map<String, dynamic>> _subscription;
+  StreamSubscription<Map<String, dynamic>>? _subscription;
 
   @override
   void initState() {
@@ -47,13 +49,13 @@ class _MyHomePageState extends State<MyHomePage> {
       });
     });
     */
-    final stream = _db.collection('todos').stream;
-    _subscription = stream.listen((event) {
+    _subscription = _db.collection('todos').stream.listen((event) {
       setState(() {
         final item = Todo.fromMap(event);
         _items.putIfAbsent(item.id, () => item);
       });
     });
+    if (kIsWeb) _db.collection('todos').stream.asBroadcastStream();
     super.initState();
   }
 
@@ -109,7 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void dispose() {
-    _subscription.cancel();
+    if (_subscription != null) _subscription?.cancel();
     super.dispose();
   }
 }
