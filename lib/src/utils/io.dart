@@ -174,7 +174,7 @@ class Utils implements UtilsImpl {
       _docDir = dir;
       return dir;
     } catch (error) {
-      throw error;
+      rethrow;
     }
   }
 
@@ -188,6 +188,7 @@ class Utils implements UtilsImpl {
     _file.setPositionSync(0);
     _file.writeFromSync(buffer);
     _file.truncateSync(buffer.length);
+    _file.unlockSync();
     _file.closeSync();
 
     final _key = path.replaceAll(RegExp(r'[^\/]+\/?$'), '');
