@@ -1,3 +1,10 @@
+# CHANGELOG
+
+## [1.2.1] - 2021-11-08
+
+* Use rethrow over throw error, add unlockSync()
+* Fix path getting for document reference
+
 ## [1.2.0] - 2021-05-04
 
 * Get doc nullable by default
