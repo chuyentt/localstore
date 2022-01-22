@@ -80,4 +80,12 @@ class CollectionRef implements CollectionRefImpl {
 
     return this;
   }
+
+  @override
+  Future clear() async {
+    //todo idk if this works
+    (await get())?.forEach((key, value) {
+      (value as DocumentRef).delete();
+    });
+  }
 }

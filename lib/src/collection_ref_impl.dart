@@ -24,4 +24,7 @@ abstract class CollectionRefImpl {
     field, {
     isEqualTo,
   });
+
+  /// removes all [DocumentRef]s from this collection
+  Future clear();
 }

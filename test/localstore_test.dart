@@ -41,5 +41,17 @@ void main() {
       final expectedData = await doc.get();
       expect(data, expectedData);
     });
+    test('clearAll works', () async {
+      final data = {'uid': '8rvf1dfxw', 'displayName': 'Chuyen'};
+      final doc = db.collection('Users').doc();
+      doc.set(data);
+      final expectedDoc = db.collection('Users').doc(doc.id);
+      expect(doc, expectedDoc);
+      final expectedData = await doc.get();
+      expect(data, expectedData);
+      await db.clearAll();
+      //doesnt rn
+      expect(await doc.get(), null);
+    });
   });
 }

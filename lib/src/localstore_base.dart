@@ -8,7 +8,7 @@ part of localstore;
 /// final db = Localstore.instance;
 /// ```
 class Localstore implements LocalstoreImpl {
-  final _delegate = DocumentRef._('');
+  final _delegate = DocumentRef._('localstore');
   Localstore._();
   static final Localstore _localstore = Localstore._();
 
@@ -17,6 +17,18 @@ class Localstore implements LocalstoreImpl {
 
   @override
   CollectionRef collection(String path) {
-    return CollectionRef(path, null, _delegate);
+    final newCollection = CollectionRef(path, null, _delegate);
+    collections.add(newCollection);
+    return newCollection;
+  }
+
+  //XXX: this wouldnt suffice since it only contains collections created in this session
+  //TODO: get all collections..
+  List<CollectionRef> collections = [];
+
+  Future clearAll() async {
+    // todo make it work
+    _delegate.delete();
+    Future.wait(collections.map((doc) => doc.clear()));
   }
 }
