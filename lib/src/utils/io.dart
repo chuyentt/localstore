@@ -89,13 +89,15 @@ class Utils implements UtilsImpl {
     await Future.forEach(entries, (FileSystemEntity e) async {
       final path = e.path.replaceAll(_docDir!.path, '');
       final file = await _getFile(path);
-      final _file = file!.openSync(mode: FileMode.append);
+      final _file = await file!.open(mode: FileMode.append);
       final data = await _readFile(_file);
-      _file.closeSync();
+      await _file.close();
+
       if (data is Map<String, dynamic>) {
         _data[path] = data;
       }
     });
+
     if (_data.isEmpty) return null;
     return _data;
   }
@@ -201,8 +203,9 @@ class Utils implements UtilsImpl {
     _docDir ??= await _getDocumentDir();
     final _path = _docDir?.path;
     final _file = File('$_path$path');
-    if (_file.existsSync()) {
-      _file.delete();
+    bool exist = await _file.exists();
+    if (exist) {
+      await _file.delete();
       _fileCache.remove(path);
     }
   }
