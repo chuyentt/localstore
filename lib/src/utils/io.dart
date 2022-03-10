@@ -64,7 +64,7 @@ class Utils implements UtilsImpl {
 
   @override
   Future<dynamic>? set(Map<String, dynamic> data, String path) {
-    _writeFile(data, path);
+    return _writeFile(data, path);
   }
 
   @override

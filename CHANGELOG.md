@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [1.2.2] - 2022-03-10
+
+* Fix async io._getAll
+
 ## [1.2.1] - 2021-11-08
 
 * Use rethrow over throw error, add unlockSync()
