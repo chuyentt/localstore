@@ -42,11 +42,10 @@ class DocumentRef implements DocumentRefImpl {
         input![key] = value;
       });
       _data[id] = input;
-      _utils.set(data, path);
     } else {
       _data[id] = data;
-      _utils.set(data, path);
     }
+    _utils.set(_data[id], path);
   }
 
   @override
