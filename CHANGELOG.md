@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [1.2.3] - 2022-03-13
+
+* Update example
+* Fixed some bug
+
 ## [1.2.2] - 2022-03-10
 
 * Fix async io._getAll
