@@ -24,4 +24,6 @@ abstract class CollectionRefImpl {
     field, {
     isEqualTo,
   });
+
+  Future<void> delete();
 }

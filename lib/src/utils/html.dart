@@ -178,25 +178,43 @@ class Utils implements UtilsImpl {
   }
 
   Future<dynamic> _deleteFromStorage(String path) async {
-    final _key = path.replaceAll(RegExp(r'[^\/]+\/?$'), '');
-    final uri = Uri.parse(path);
-    final _id = uri.pathSegments.last;
-    var dataCol = localStorage.entries.singleWhere(
-      (e) => e.key == _key,
-      orElse: () => MapEntry('', ''),
-    );
-    try {
-      if (dataCol.key != '') {
-        final mapCol = json.decode(dataCol.value) as Map<String, dynamic>;
-        mapCol.remove(_id);
-        localStorage.update(
-          _key,
-          (value) => json.encode(mapCol),
-          ifAbsent: () => dataCol.value,
-        );
+    if (path.endsWith('/')) {
+      // If path is a directory path
+      final dataCol = localStorage.entries.singleWhere(
+        (element) => element.key == path,
+        orElse: () => MapEntry('', ''),
+      );
+
+      try {
+        if (dataCol.key != '') {
+          localStorage.remove(dataCol.key);
+        }
+      } catch (error) {
+        throw error;
       }
-    } catch (error) {
-      throw error;
+    } else {
+      // If path is a file path
+      final uri = Uri.parse(path);
+      final _key = path.replaceAll(RegExp(r'[^\/]+\/?$'), '');
+      final _id = uri.pathSegments.last;
+      var dataCol = localStorage.entries.singleWhere(
+        (e) => e.key == _key,
+        orElse: () => MapEntry('', ''),
+      );
+
+      try {
+        if (dataCol.key != '') {
+          final mapCol = json.decode(dataCol.value) as Map<String, dynamic>;
+          mapCol.remove(_id);
+          localStorage.update(
+            _key,
+            (value) => json.encode(mapCol),
+            ifAbsent: () => dataCol.value,
+          );
+        }
+      } catch (error) {
+        throw error;
+      }
     }
   }
 }

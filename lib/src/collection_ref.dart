@@ -80,4 +80,9 @@ class CollectionRef implements CollectionRefImpl {
 
     return this;
   }
+
+  @override
+  Future<void> delete() async {
+    _utils.delete(path);
+  }
 }

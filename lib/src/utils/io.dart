@@ -69,7 +69,11 @@ class Utils implements UtilsImpl {
 
   @override
   Future delete(String path) async {
-    _deleteFile(path);
+    if (path.endsWith('/')) {
+      _deleteDirectory(path);
+    } else {
+      _deleteFile(path);
+    }
   }
 
   @override
@@ -203,10 +207,21 @@ class Utils implements UtilsImpl {
     _docDir ??= await _getDocumentDir();
     final _path = _docDir?.path;
     final _file = File('$_path$path');
-    bool exist = await _file.exists();
-    if (exist) {
-      await _file.delete();
+
+    if (_file.existsSync()) {
+      _file.deleteSync();
       _fileCache.remove(path);
+    }
+  }
+
+  Future _deleteDirectory(String path) async {
+    _docDir ??= await _getDocumentDir();
+    final _path = _docDir?.path;
+    final _dir = Directory('$_path$path');
+
+    if (_dir.existsSync()) {
+      _dir.deleteSync(recursive: true);
+      _fileCache.removeWhere((key, value) => key.startsWith(path));
     }
   }
 }
