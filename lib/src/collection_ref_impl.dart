@@ -25,5 +25,8 @@ abstract class CollectionRefImpl {
     isEqualTo,
   });
 
+  /// Delete collection
+  ///
+  /// All collections and documents in this collection will be deleted.
   Future<void> delete();
 }

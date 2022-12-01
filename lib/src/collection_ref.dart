@@ -26,12 +26,16 @@ class CollectionRef implements CollectionRefImpl {
   static final _cache = <String, CollectionRef>{};
 
   /// Returns an instance using the default [CollectionRef].
-  factory CollectionRef(String id,
-      [CollectionRef? parent, DocumentRef? delegate]) {
+  factory CollectionRef(
+    String id, [
+    CollectionRef? parent,
+    DocumentRef? delegate,
+    List<List>? conditions,
+  ]) {
     final key = _buildPath(parent?.path, id, delegate?.id);
-    final collectionRef =
-        _cache.putIfAbsent(key, () => CollectionRef._(id, parent, delegate));
-    collectionRef._conditions = null;
+    final collectionRef = _cache.putIfAbsent(
+        key, () => CollectionRef._(id, parent, delegate, conditions));
+    collectionRef._conditions = conditions;
     return collectionRef;
   }
 

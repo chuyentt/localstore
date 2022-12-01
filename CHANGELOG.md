@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [1.3.0] - 2022-12-01
+
+* Added delete collection
+* Fixed some bug
+
 ## [1.2.3] - 2022-03-13
 
 * Update example
