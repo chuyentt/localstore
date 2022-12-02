@@ -11,6 +11,13 @@ void main() {
       .setMockMethodCallHandler(channel, (MethodCall methodCall) async {
     return ".";
   });
+
+  const MethodChannel channelMacos =
+      MethodChannel('plugins.flutter.io/path_provider_macos');
+  TestDefaultBinaryMessengerBinding.instance?.defaultBinaryMessenger
+      .setMockMethodCallHandler(channelMacos, (MethodCall methodCall) async {
+    return ".";
+  });
   group('Localstore', () {
     final db = Localstore.instance;
     test('creates an instance', () {
@@ -57,10 +64,10 @@ void main() {
       final col1 = db.collection('collection1');
       final col2 = db.collection('collection2');
 
-      await col1.doc().set(data_1);
-      await col2.doc().set(data_1);
-      await col2.doc().set(data_2);
-      await col2.doc().set(data_3);
+      await col1.doc(data_1['uid']).set(data_1);
+      await col2.doc(data_1['uid']).set(data_1);
+      await col2.doc(data_2['uid']).set(data_2);
+      await col2.doc(data_3['uid']).set(data_3);
 
       await db.collection('collection1').delete();
       final expectedDataCol1 = await db.collection('collection1').get();
@@ -72,6 +79,10 @@ void main() {
       await db.collection('collection2').delete();
       final expectedDataCol2 = await db.collection('collection2').get();
       expect(null, expectedDataCol2);
+
+      await db.collection('collection2').doc(data_2['uid']).delete();
+      final data = await db.collection('collection2').doc(data_2['uid']).get();
+      expect(null, data);
     });
   });
 }

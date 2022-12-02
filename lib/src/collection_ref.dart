@@ -87,6 +87,14 @@ class CollectionRef implements CollectionRefImpl {
 
   @override
   Future<void> delete() async {
+    final docs = await _utils.get(path, true, _conditions);
+    if (docs != null) {
+      for (var key in docs.keys) {
+        final id = key.split('/').last;
+        DocumentRef(id, this)._data.clear();
+      }
+    }
+
     _utils.delete(path);
   }
 }
