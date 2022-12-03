@@ -31,7 +31,7 @@ class MyHomePage extends StatefulWidget {
   final String? title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -165,12 +165,12 @@ class Todo {
 
 extension ExtTodo on Todo {
   Future save() async {
-    final _db = Localstore.instance;
-    return _db.collection('todos').doc(id).set(toMap());
+    final db = Localstore.instance;
+    return db.collection('todos').doc(id).set(toMap());
   }
 
   Future delete() async {
-    final _db = Localstore.instance;
-    return _db.collection('todos').doc(id).delete();
+    final db = Localstore.instance;
+    return db.collection('todos').doc(id).delete();
   }
 }

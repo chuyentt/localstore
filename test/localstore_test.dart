@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -61,28 +62,25 @@ void main() {
       final data_2 = {'uid': '8rvf1dfxw', 'displayName': 'Chuyen'};
       final data_3 = {'uid': '9rvf1dfxw', 'displayName': 'Chuyen'};
 
-      final col1 = db.collection('collection1');
-      final col2 = db.collection('collection2');
-
-      await col1.doc(data_1['uid']).set(data_1);
-      await col2.doc(data_1['uid']).set(data_1);
-      await col2.doc(data_2['uid']).set(data_2);
-      await col2.doc(data_3['uid']).set(data_3);
-
+      await db.collection('collection1').doc(data_1['uid']).set(data_1);
+      await db.collection('collection2').doc(data_1['uid']).set(data_1);
+      await db.collection('collection2').doc(data_2['uid']).set(data_2);
+      await db.collection('collection2').doc(data_3['uid']).set(data_3);
       await db.collection('collection1').delete();
       final expectedDataCol1 = await db.collection('collection1').get();
-      expect(null, expectedDataCol1);
+      debugPrint(expectedDataCol1.toString());
+      expect(expectedDataCol1, null);
 
-      final dataCol2 = await db.collection('collection2').get();
-      expect(true, dataCol2 != null);
+      // final dataCol2 = await db.collection('collection2').get();
+      // expect(true, dataCol2 != null);
 
-      await db.collection('collection2').delete();
-      final expectedDataCol2 = await db.collection('collection2').get();
-      expect(null, expectedDataCol2);
+      // await db.collection('collection2').delete();
+      // final expectedDataCol2 = await db.collection('collection2').get();
+      // expect(expectedDataCol2, null);
 
-      await db.collection('collection2').doc(data_2['uid']).delete();
-      final data = await db.collection('collection2').doc(data_2['uid']).get();
-      expect(null, data);
+      // await db.collection('collection2').doc(data_2['uid']).delete();
+      // final data = await db.collection('collection2').doc(data_2['uid']).get();
+      // expect(data, null);
     });
   });
 }
