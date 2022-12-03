@@ -15,7 +15,7 @@ Between SQL or NoSQL, there's no one best database, there's the right database f
 
 <img src="https://user-images.githubusercontent.com/6267856/112655041-94e72100-8e82-11eb-8d9f-673f0f2e1b80.gif" width="320" />
 
-## GeoJSON UML Model
+## UML diagram
 
 ![Localstore UML diagram](https://raw.githubusercontent.com/chuyentt/localstore/master/doc/localstore_uml_diagram.svg)
 
