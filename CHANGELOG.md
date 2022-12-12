@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## [1.3.3] - 2022-12-12
+## [1.3.4] - 2022-12-12
 
 * Fixed bug (thank charleybin)
 

@@ -85,15 +85,15 @@ class Utils implements UtilsImpl {
   }
 
   Map<String, dynamic>? _getAll(MapEntry<String, String> dataCol) {
-    final data = <String, dynamic>{};
+    final items = <String, dynamic>{};
     try {
       final mapCol = json.decode(dataCol.value) as Map<String, dynamic>;
       mapCol.forEach((key, value) {
         final data = value as Map<String, dynamic>;
-        data[key] = data;
+        items[key] = data;
       });
-      if (data.isEmpty) return null;
-      return data;
+      if (items.isEmpty) return null;
+      return items;
     } catch (error) {
       rethrow;
     }
