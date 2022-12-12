@@ -89,7 +89,7 @@ class Utils implements UtilsImpl {
   }
 
   Future<Map<String, dynamic>?> _getAll(List<FileSystemEntity> entries) async {
-    final data = <String, dynamic>{};
+    final items = <String, dynamic>{};
     final docDir = await getApplicationDocumentsDirectory();
     await Future.forEach(entries, (FileSystemEntity e) async {
       final path = e.path.replaceAll(docDir.absolute.path, '');
@@ -103,8 +103,8 @@ class Utils implements UtilsImpl {
       }
     });
 
-    if (data.isEmpty) return null;
-    return data;
+    if (items.isEmpty) return null;
+    return items;
   }
 
   /// Streams all file in the path

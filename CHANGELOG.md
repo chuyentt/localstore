@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [1.3.2] - 2022-12-12
+
+* Fixed bug (thank charleybin)
+
 ## [1.3.1] - 2022-12-03
 
 * Added UML diagram
