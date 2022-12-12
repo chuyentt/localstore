@@ -99,7 +99,7 @@ class Utils implements UtilsImpl {
       await randomAccessFile.close();
 
       if (data is Map<String, dynamic>) {
-        data[path] = data;
+        items[path] = data;
       }
     });
 

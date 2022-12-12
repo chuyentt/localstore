@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [1.3.3] - 2022-12-12
+
+* Fixed bug (thank charleybin)
+
 ## [1.3.2] - 2022-12-12
 
 * Fixed bug (thank charleybin)
