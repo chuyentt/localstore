@@ -95,6 +95,6 @@ class CollectionRef implements CollectionRefImpl {
       }
     }
 
-    _utils.delete(path);
+    await _utils.delete(path);
   }
 }
