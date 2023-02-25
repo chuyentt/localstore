@@ -10,6 +10,7 @@ import 'utils_impl.dart';
 class Utils implements UtilsImpl {
   Utils._();
   static final Utils _utils = Utils._();
+  static final lastPathComponentRegEx = RegExp(r'[^/\\]+[/\\]?$');
   static Utils get instance => _utils;
   final _storageCache = <String, StreamController<Map<String, dynamic>>>{};
   final _fileCache = <String, File>{};
@@ -52,7 +53,7 @@ class Utils implements UtilsImpl {
       final data = await _readFile(randomAccessFile);
       randomAccessFile.closeSync();
       if (data is Map<String, dynamic>) {
-        final key = path.replaceAll(RegExp(r'[^\/]+\/?$'), '');
+        final key = path.replaceAll(lastPathComponentRegEx, '');
         // ignore: close_sinks
         final storage = _storageCache.putIfAbsent(key, () => _newStream(key));
         storage.add(data);
@@ -69,7 +70,7 @@ class Utils implements UtilsImpl {
 
   @override
   Future delete(String path) async {
-    if (path.endsWith('/')) {
+    if (path.endsWith(Platform.pathSeparator)) {
       _deleteDirectory(path);
     } else {
       _deleteFile(path);
@@ -183,7 +184,7 @@ class Utils implements UtilsImpl {
     randomAccessFile.unlockSync();
     randomAccessFile.closeSync();
 
-    final key = path.replaceAll(RegExp(r'[^\/]+\/?$'), '');
+    final key = path.replaceAll(lastPathComponentRegEx, '');
     // ignore: close_sinks
     final storage = _storageCache.putIfAbsent(key, () => _newStream(key));
     storage.add(data);
