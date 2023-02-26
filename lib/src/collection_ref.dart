@@ -17,6 +17,8 @@ class CollectionRef implements CollectionRefImpl {
 
   List<List>? _conditions;
 
+  static final pathSeparatorRegEx = RegExp(r'[/\\]');
+
   /// The parent [CollectionRef] of this document.
   CollectionRef? get parent => _parent;
 
@@ -90,11 +92,11 @@ class CollectionRef implements CollectionRefImpl {
     final docs = await _utils.get(path, true, _conditions);
     if (docs != null) {
       for (var key in docs.keys) {
-        final id = key.split('/').last;
+        final id = key.split(pathSeparatorRegEx).last;
         DocumentRef(id, this)._data.clear();
       }
     }
 
-    _utils.delete(path);
+    await _utils.delete(path);
   }
 }
