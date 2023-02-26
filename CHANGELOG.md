@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [1.3.5] - 2023-02-26
+
+* Fixed issue #25 Windows path separator
+* Fixed issue #24 race condition when deleting a collection 
+
 ## [1.3.4] - 2022-12-12
 
 * Fixed bug (thank charleybin)
