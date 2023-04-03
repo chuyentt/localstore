@@ -71,9 +71,9 @@ class Utils implements UtilsImpl {
   @override
   Future delete(String path) async {
     if (path.endsWith(Platform.pathSeparator)) {
-      _deleteDirectory(path);
+      await _deleteDirectory(path);
     } else {
-      _deleteFile(path);
+      await _deleteFile(path);
     }
   }
 
@@ -195,8 +195,8 @@ class Utils implements UtilsImpl {
     final fullPath = docDir.path;
     final file = File('$fullPath$path');
 
-    if (file.existsSync()) {
-      file.deleteSync();
+    if (await file.exists()) {
+      await file.delete();
       _fileCache.remove(path);
     }
   }
@@ -206,8 +206,8 @@ class Utils implements UtilsImpl {
     final fullPath = docDir.path;
     final dir = Directory('$fullPath$path');
 
-    if (dir.existsSync()) {
-      dir.deleteSync(recursive: true);
+    if (await dir.exists()) {
+      await dir.delete(recursive: true);
       _fileCache.removeWhere((key, value) => key.startsWith(path));
     }
   }
