@@ -1,4 +1,8 @@
 # CHANGELOG
+## [1.3.6] - 2023-04-03
+
+* Fixed issue where `delete` call was not awaited leading to a possible inconsistency when 
+  deleting and then reading a ref immediately afterwards
 
 ## [1.3.5] - 2023-02-26
 
