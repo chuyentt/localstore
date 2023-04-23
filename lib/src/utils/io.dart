@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:path_provider/path_provider.dart';
+import 'package:localstore/localstore.dart';
 
 import 'utils_impl.dart';
 
@@ -20,8 +20,8 @@ class Utils implements UtilsImpl {
       [bool? isCollection = false, List<List>? conditions]) async {
     // Fetch the documents for this collection
     if (isCollection != null && isCollection == true) {
-      final docDir = await getApplicationDocumentsDirectory();
-      final fullPath = '${docDir.path}$path';
+      final dbDir = await Localstore.instance.getDatabaseDirectory();
+      final fullPath = '${dbDir.path}$path';
       final dir = Directory(fullPath);
       if (!dir.existsSync()) {
         dir.createSync(recursive: true);
@@ -91,9 +91,9 @@ class Utils implements UtilsImpl {
 
   Future<Map<String, dynamic>?> _getAll(List<FileSystemEntity> entries) async {
     final items = <String, dynamic>{};
-    final docDir = await getApplicationDocumentsDirectory();
+    final dbDir = await Localstore.instance.getDatabaseDirectory();
     await Future.forEach(entries, (FileSystemEntity e) async {
-      final path = e.path.replaceAll(docDir.absolute.path, '');
+      final path = e.path.replaceAll(dbDir.path, '');
       final file = await _getFile(path);
       final randomAccessFile = await file!.open(mode: FileMode.append);
       final data = await _readFile(randomAccessFile);
@@ -120,14 +120,14 @@ class Utils implements UtilsImpl {
     StreamController<Map<String, dynamic>> storage,
     String path,
   ) async {
-    final docDir = await getApplicationDocumentsDirectory();
-    final fullPath = '${docDir.path}$path';
+    final dbDir = await Localstore.instance.getDatabaseDirectory();
+    final fullPath = '${dbDir.path}$path';
     final dir = Directory(fullPath);
     try {
       List<FileSystemEntity> entries =
           dir.listSync(recursive: false).whereType<File>().toList();
       for (var e in entries) {
-        final path = e.path.replaceAll(docDir.absolute.path, '');
+        final path = e.path.replaceAll(dbDir.path, '');
         final file = await _getFile(path);
         final randomAccessFile = file!.openSync(mode: FileMode.append);
         _readFile(randomAccessFile).then((data) {
@@ -159,11 +159,9 @@ class Utils implements UtilsImpl {
   Future<File?> _getFile(String path) async {
     if (_fileCache.containsKey(path)) return _fileCache[path];
 
-    final docDir = await getApplicationDocumentsDirectory();
+    final dbDir = await Localstore.instance.getDatabaseDirectory();
 
-    final fullPath = docDir.path;
-
-    final file = File('$fullPath$path');
+    final file = File('${dbDir.path}$path');
 
     if (!file.existsSync()) file.createSync(recursive: true);
     _fileCache.putIfAbsent(path, () => file);
@@ -191,9 +189,8 @@ class Utils implements UtilsImpl {
   }
 
   Future _deleteFile(String path) async {
-    final docDir = await getApplicationDocumentsDirectory();
-    final fullPath = docDir.path;
-    final file = File('$fullPath$path');
+    final dbDir = await Localstore.instance.getDatabaseDirectory();
+    final file = File('${dbDir.path}$path');
 
     if (file.existsSync()) {
       file.deleteSync();
@@ -202,9 +199,8 @@ class Utils implements UtilsImpl {
   }
 
   Future _deleteDirectory(String path) async {
-    final docDir = await getApplicationDocumentsDirectory();
-    final fullPath = docDir.path;
-    final dir = Directory('$fullPath$path');
+    final dbDir = await Localstore.instance.getDatabaseDirectory();
+    final dir = Directory('${dbDir.path}$path');
 
     if (dir.existsSync()) {
       dir.deleteSync(recursive: true);
