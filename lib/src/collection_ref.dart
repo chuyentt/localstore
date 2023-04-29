@@ -73,18 +73,17 @@ class CollectionRef implements CollectionRefImpl {
     isEqualTo,
   }) {
     final conditions = <List>[];
-    void addCondition(dynamic field, String operator, dynamic value) {
-      List<dynamic> condition;
-
-      condition = <dynamic>[field, operator, value];
-      conditions.add(condition);
-    }
-
-    if (isEqualTo != null) addCondition(field, '==', isEqualTo);
+    addCondition(field, '==', isEqualTo);
 
     _conditions = conditions;
 
     return this;
+  }
+
+  void addCondition(dynamic field, String operator, dynamic value) {
+    List<dynamic> condition;
+    condition = <dynamic>[field, operator, value];
+    _conditions?.add(condition);
   }
 
   @override

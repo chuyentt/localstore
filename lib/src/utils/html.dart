@@ -23,31 +23,6 @@ class Utils implements UtilsImpl {
       if (dataCol.key != '') {
         if (conditions != null && conditions.first.isNotEmpty) {
           return _getAll(dataCol);
-          /*
-          final ck = conditions.first[0] as String;
-          final co = conditions.first[1];
-          final cv = conditions.first[2];
-          // With conditions
-          try {
-            final mapCol = json.decode(dataCol.value) as Map<String, dynamic>;
-            final its = SplayTreeMap.of(mapCol);
-            its.removeWhere((key, value) {
-              if (value is Map<String, dynamic>) {
-                final key = value.keys.contains(ck);
-                final check = value[ck] as bool;
-                return !(key == true && check == cv);
-              }
-              return false;
-            });
-            its.forEach((key, value) {
-              final data = value as Map<String, dynamic>;
-              _data[key] = data;
-            });
-            return _data;
-          } catch (error) {
-            throw error;
-          }
-          */
         } else {
           return _getAll(dataCol);
         }
@@ -215,4 +190,7 @@ class Utils implements UtilsImpl {
       }
     }
   }
+
+  @override
+  void setCustomSavePath(String path) {}
 }

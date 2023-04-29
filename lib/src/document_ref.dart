@@ -63,9 +63,4 @@ class DocumentRef implements DocumentRefImpl {
   CollectionRef collection(String id) {
     return CollectionRef(id, _delegate, this);
   }
-
-  @override
-  String toString() {
-    return _utils.toString();
-  }
 }

@@ -12,6 +12,7 @@ class Utils implements UtilsImpl {
   static final Utils _utils = Utils._();
   static final lastPathComponentRegEx = RegExp(r'[^/\\]+[/\\]?$');
   static Utils get instance => _utils;
+  String? _customSavePath;
   final _storageCache = <String, StreamController<Map<String, dynamic>>>{};
   final _fileCache = <String, File>{};
 
@@ -21,8 +22,8 @@ class Utils implements UtilsImpl {
     // Fetch the documents for this collection
     if (isCollection != null && isCollection == true) {
       final docDir = await getApplicationDocumentsDirectory();
-      final fullPath = '${docDir.path}$path';
-      final dir = Directory(fullPath);
+      final fullPath = _customSavePath ?? docDir.path;
+      final dir = Directory('$fullPath$path');
       if (!dir.existsSync()) {
         dir.createSync(recursive: true);
       }
@@ -92,8 +93,10 @@ class Utils implements UtilsImpl {
   Future<Map<String, dynamic>?> _getAll(List<FileSystemEntity> entries) async {
     final items = <String, dynamic>{};
     final docDir = await getApplicationDocumentsDirectory();
+    final fullPath = _customSavePath ?? docDir.path;
+    final dir = Directory(fullPath);
     await Future.forEach(entries, (FileSystemEntity e) async {
-      final path = e.path.replaceAll(docDir.absolute.path, '');
+      final path = e.path.replaceAll(dir.absolute.path, '');
       final file = await _getFile(path);
       final randomAccessFile = await file!.open(mode: FileMode.append);
       final data = await _readFile(randomAccessFile);
@@ -121,14 +124,14 @@ class Utils implements UtilsImpl {
     String path,
   ) async {
     final docDir = await getApplicationDocumentsDirectory();
-    final fullPath = '${docDir.path}$path';
-    final dir = Directory(fullPath);
+    final fullPath = _customSavePath ?? docDir.path;
+    final dir = Directory('$fullPath$path');
     try {
       List<FileSystemEntity> entries =
           dir.listSync(recursive: false).whereType<File>().toList();
       for (var e in entries) {
-        final path = e.path.replaceAll(docDir.absolute.path, '');
-        final file = await _getFile(path);
+        final filePath = e.path.replaceAll(dir.absolute.path, '');
+        final file = await _getFile('$path$filePath');
         final randomAccessFile = file!.openSync(mode: FileMode.append);
         _readFile(randomAccessFile).then((data) {
           randomAccessFile.closeSync();
@@ -159,11 +162,11 @@ class Utils implements UtilsImpl {
   Future<File?> _getFile(String path) async {
     if (_fileCache.containsKey(path)) return _fileCache[path];
 
-    final docDir = await getApplicationDocumentsDirectory();
-
-    final fullPath = docDir.path;
-
-    final file = File('$fullPath$path');
+    final fullPath =
+        _customSavePath ?? (await getApplicationDocumentsDirectory()).path;
+    final file = File(fullPath.endsWith(Platform.pathSeparator)
+        ? '$fullPath$path'
+        : '$fullPath${Platform.pathSeparator}$path');
 
     if (!file.existsSync()) file.createSync(recursive: true);
     _fileCache.putIfAbsent(path, () => file);
@@ -191,9 +194,11 @@ class Utils implements UtilsImpl {
   }
 
   Future _deleteFile(String path) async {
-    final docDir = await getApplicationDocumentsDirectory();
-    final fullPath = docDir.path;
-    final file = File('$fullPath$path');
+    final fullPath =
+        _customSavePath ?? (await getApplicationDocumentsDirectory()).path;
+    final file = File(fullPath.endsWith(Platform.pathSeparator)
+        ? '$fullPath$path'
+        : '$fullPath${Platform.pathSeparator}$path');
 
     if (file.existsSync()) {
       file.deleteSync();
@@ -202,13 +207,18 @@ class Utils implements UtilsImpl {
   }
 
   Future _deleteDirectory(String path) async {
-    final docDir = await getApplicationDocumentsDirectory();
-    final fullPath = docDir.path;
+    final fullPath =
+        _customSavePath ?? (await getApplicationDocumentsDirectory()).path;
     final dir = Directory('$fullPath$path');
-
     if (dir.existsSync()) {
       dir.deleteSync(recursive: true);
       _fileCache.removeWhere((key, value) => key.startsWith(path));
     }
+  }
+
+  @override
+  void setCustomSavePath(String path) {
+    _customSavePath = path;
+    _utils.setCustomSavePath(_customSavePath!);
   }
 }
