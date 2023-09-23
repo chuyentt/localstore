@@ -37,9 +37,9 @@ class DocumentRef implements DocumentRefImpl {
     options ??= SetOptions();
     if (options.merge) {
       final output = Map<String, dynamic>.from(data);
-      Map<String, dynamic>? input = _data[id] ?? {};
+      Map<String, dynamic>? input = await get() ?? {};
       output.updateAll((key, value) {
-        input![key] = value;
+        input[key] = value;
       });
       _data[id] = input;
     } else {
