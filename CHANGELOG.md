@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [1.4.0] - 2024-04-11
+
+* Implement getInstance in Localstore to support custom path and directory selection
+
 ## [1.3.5] - 2023-02-26
 
 * Fixed issue #25 Windows path separator

@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'utils_impl.dart';
@@ -13,16 +13,49 @@ class Utils implements UtilsImpl {
   static final lastPathComponentRegEx = RegExp(r'[^/\\]+[/\\]?$');
   static Utils get instance => _utils;
   String? _customSavePath;
+  bool useSupportDir = false;
   final _storageCache = <String, StreamController<Map<String, dynamic>>>{};
   final _fileCache = <String, File>{};
+
+  @override
+  void setCustomSavePath(String path) {
+    _customSavePath = path;
+    _utils.setCustomSavePath(_customSavePath!);
+  }
+
+  @override
+  void setUseSupportDirectory(bool useSupportDir) {
+    this.useSupportDir = useSupportDir;
+  }
+
+  Future<String> getDatabasePath() async {
+    Directory directory;
+
+    if (Platform.isIOS) {
+      if (useSupportDir) {
+        directory = await getApplicationSupportDirectory();
+      } else {
+        directory = await getApplicationDocumentsDirectory();
+      }
+    } else if (Platform.isAndroid) {
+      directory = await getApplicationDocumentsDirectory();
+    } else {
+      // Add other platform-specific directory as needed
+      // throw UnsupportedError('This platform is not supported for databases.');
+      directory = Directory.current;
+    }
+    debugPrint(directory.path);
+
+    return directory.path;
+  }
 
   @override
   Future<Map<String, dynamic>?> get(String path,
       [bool? isCollection = false, List<List>? conditions]) async {
     // Fetch the documents for this collection
     if (isCollection != null && isCollection == true) {
-      final docDir = await getApplicationDocumentsDirectory();
-      final fullPath = _customSavePath ?? docDir.path;
+      final dbPath = await getDatabasePath();
+      final fullPath = _customSavePath ?? dbPath;
       final dir = Directory('$fullPath$path');
       if (!dir.existsSync()) {
         dir.createSync(recursive: true);
@@ -92,8 +125,8 @@ class Utils implements UtilsImpl {
 
   Future<Map<String, dynamic>?> _getAll(List<FileSystemEntity> entries) async {
     final items = <String, dynamic>{};
-    final docDir = await getApplicationDocumentsDirectory();
-    final fullPath = _customSavePath ?? docDir.path;
+    final dbPath = await getDatabasePath();
+    final fullPath = _customSavePath ?? dbPath;
     final dir = Directory(fullPath);
     await Future.forEach(entries, (FileSystemEntity e) async {
       final path = e.path.replaceAll(dir.absolute.path, '');
@@ -123,8 +156,8 @@ class Utils implements UtilsImpl {
     StreamController<Map<String, dynamic>> storage,
     String path,
   ) async {
-    final docDir = await getApplicationDocumentsDirectory();
-    final fullPath = _customSavePath ?? docDir.path;
+    final dbPath = await getDatabasePath();
+    final fullPath = _customSavePath ?? dbPath;
     final dir = Directory('$fullPath$path');
     try {
       List<FileSystemEntity> entries =
@@ -162,8 +195,7 @@ class Utils implements UtilsImpl {
   Future<File?> _getFile(String path) async {
     if (_fileCache.containsKey(path)) return _fileCache[path];
 
-    final fullPath =
-        _customSavePath ?? (await getApplicationDocumentsDirectory()).path;
+    final fullPath = _customSavePath ?? await getDatabasePath();
     final file = File(fullPath.endsWith(Platform.pathSeparator)
         ? '$fullPath$path'
         : '$fullPath${Platform.pathSeparator}$path');
@@ -194,8 +226,7 @@ class Utils implements UtilsImpl {
   }
 
   Future _deleteFile(String path) async {
-    final fullPath =
-        _customSavePath ?? (await getApplicationDocumentsDirectory()).path;
+    final fullPath = _customSavePath ?? await getDatabasePath();
     final file = File(fullPath.endsWith(Platform.pathSeparator)
         ? '$fullPath$path'
         : '$fullPath${Platform.pathSeparator}$path');
@@ -207,18 +238,11 @@ class Utils implements UtilsImpl {
   }
 
   Future _deleteDirectory(String path) async {
-    final fullPath =
-        _customSavePath ?? (await getApplicationDocumentsDirectory()).path;
+    final fullPath = _customSavePath ?? await getDatabasePath();
     final dir = Directory('$fullPath$path');
     if (dir.existsSync()) {
       dir.deleteSync(recursive: true);
       _fileCache.removeWhere((key, value) => key.startsWith(path));
     }
-  }
-
-  @override
-  void setCustomSavePath(String path) {
-    _customSavePath = path;
-    _utils.setCustomSavePath(_customSavePath!);
   }
 }

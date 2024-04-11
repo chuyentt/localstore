@@ -46,4 +46,6 @@ abstract class UtilsImpl {
   /// Utils.instance.setCustomSavePath('/your/custom/path');
   /// ```
   void setCustomSavePath(String path);
+
+  void setUseSupportDirectory(bool useSupportDir);
 }

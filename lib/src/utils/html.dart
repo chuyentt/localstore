@@ -193,4 +193,7 @@ class Utils implements UtilsImpl {
 
   @override
   void setCustomSavePath(String path) {}
+
+  @override
+  void setUseSupportDirectory(bool useSupportDir) {}
 }

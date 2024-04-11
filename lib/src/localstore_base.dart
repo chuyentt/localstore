@@ -1,52 +1,53 @@
-part of localstore;
+part of '../localstore.dart';
 
-/// The entry point for accessing a [Localstore].
+/// This is the entry point for accessing a [Localstore].
 ///
-/// You can get an instance by calling [Localstore.instance], for example:
+/// You can obtain an instance by calling [Localstore.instance]. For example:
 ///
 /// ```dart
 /// final db = Localstore.instance;
 /// ```
 ///
-/// To use a custom save path, you can either create a new Localstore instance
-/// with the custom path, or set the custom path on the default instance.
-/// For example:
+/// To create an instance with a custom save path or to use the support directory,
+/// use the [getInstance] method. For example:
 ///
 /// ```dart
-/// final db = Localstore.customPath('/your/custom/path');
-/// // or
-/// Localstore.instance.setCustomSavePath('/your/custom/path');
+/// final db = Localstore.getInstance(customPath: '/your/custom/path');
+/// // or to use the support directory
+/// final db = Localstore.getInstance(useSupportDir: true);
 /// ```
+///
+/// Note: When `useSupportDir` is set to `true`, `customPath` must be null or empty.
 class Localstore implements LocalstoreImpl {
   final _delegate = DocumentRef._('');
-  String? _customSavePath;
   final _utils = Utils.instance;
 
   Localstore._();
-  Localstore.customPath(this._customSavePath) {
-    _utils.setCustomSavePath(_customSavePath!);
-  }
 
   static final Localstore _localstore = Localstore._();
 
   /// Returns an instance using the default [Localstore].
   static Localstore get instance => _localstore;
 
+  /// Returns an instance of [Localstore] with a custom save path or using the support directory.
+  /// If `useSupportDir` is true, `customPath` must be null or empty.
+  static Localstore getInstance(
+      {String? customPath, bool useSupportDir = false}) {
+    assert(!(useSupportDir && (customPath != null && customPath.isNotEmpty)),
+        "When useSupportDir is true, customPath must be null or empty.");
+
+    if ((customPath == null || customPath.isNotEmpty) && !useSupportDir) {
+      return _localstore;
+    } else if (customPath != null) {
+      _localstore._utils.setCustomSavePath(customPath);
+    } else {
+      _localstore._utils.setUseSupportDirectory(useSupportDir);
+    }
+    return _localstore;
+  }
+
   @override
   CollectionRef collection(String path) {
     return CollectionRef(path, null, _delegate);
-  }
-
-  /// Sets the custom save path for the Localstore instance.
-  ///
-  /// This method can be used to set a custom save path for the default
-  /// Localstore instance.
-  ///
-  /// ```dart
-  /// Localstore.instance.setCustomSavePath('/your/custom/path');
-  /// ```
-  void setCustomSavePath(String path) {
-    _customSavePath = path;
-    _utils.setCustomSavePath(_customSavePath!);
   }
 }

@@ -35,7 +35,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final _db = Localstore.instance;
+  final _db = Localstore.getInstance(useSupportDir: true);
   final _items = <String, Todo>{};
   StreamSubscription<Map<String, dynamic>>? _subscription;
 
